@@ -67,7 +67,7 @@ public class GenerateObstacles : MonoBehaviour
 
         if (lives <= 0)
         {
-            SceneManager.LoadScene("GameOver");
+            lives = 0;
         }
         player_script.player_lives = lives;
         Destroy(obstacle_script.gameObject);

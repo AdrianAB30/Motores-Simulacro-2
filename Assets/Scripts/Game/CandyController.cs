@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CandyController : MonoBehaviour
 {
-    public int lifeChanges = 0;
+    public CandiesSO candiesPoints;
 
     void Update()
     {

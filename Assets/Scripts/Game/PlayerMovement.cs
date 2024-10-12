@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D myRB;
     [SerializeField] private Transform startPosition;
     [SerializeField] private float speed;
+    [SerializeField] private float speedSpecial;
     private float limitSuperior;
     private float limitInferior;
     public int player_lives = 4;
@@ -20,11 +21,13 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("UI Data")]
     [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text lifeText;
 
     void Start()
     {
         SetMinMax();
         myRB = GetComponent<Rigidbody2D>();
+        ResetScore();
     }
 
     void FixedUpdate()
@@ -34,6 +37,22 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         UpdateScore();
+        UpdateLife();
+
+        if(player_lives <= 0)
+        {
+            GameManager.instance.GameOver();
+        }
+        ElectionGameplay();
+    }
+    private void MovePlayerWithMouse()
+    {
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition.z = 0;
+
+        float targetY = Mathf.Clamp(mousePosition.y, limitInferior, limitSuperior);
+        Vector2 targetPosition = new Vector2(transform.position.x, targetY);
+        transform.position = Vector2.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
     }
     private void AplyPhysics()
     {
@@ -69,7 +88,8 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (collision.CompareTag("Especial"))
         {
-
+            speed += speedSpecial;
+            Destroy(collision.gameObject);
         }
         else if (collision.CompareTag("Obstacle"))
         {
@@ -92,5 +112,26 @@ public class PlayerMovement : MonoBehaviour
     private void UpdateScore()
     {
         scoreText.text = "SCORE: " + playerScore.score.ToString();
+    }
+    private void ResetScore()
+    {
+        playerScore.ResetScore();
+        UpdateScore();
+    }
+    private void UpdateLife()
+    {
+        lifeText.text = "LIVES: " + player_lives.ToString();
+    }
+    private void ElectionGameplay()
+    {
+        string controlType = PlayerPrefs.GetString("ControlType", "Keyboard");
+        if(controlType == "Mouse")
+        {
+            MovePlayerWithMouse();
+        }
+        else if(controlType == "Keyboard")
+        {
+            AplyPhysics();
+        }
     }
 }

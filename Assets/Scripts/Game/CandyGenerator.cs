@@ -53,10 +53,10 @@ public class CandyGenerator : MonoBehaviour
             Destroy(candy_script.gameObject);
             return;
         }
-        int point = player_script.player_lives;
-        int live_changer = candy_script.lifeChanges;
+        int point = player_script.playerScore.score;
+        int live_changer = candy_script.candiesPoints.pointsAdd;
         point += live_changer;
-        player_script.playerScore.score += candy_script.lifeChanges;
+        player_script.playerScore.score += candy_script.candiesPoints.pointsAdd;
         Destroy(candy_script.gameObject);
     }
 }
