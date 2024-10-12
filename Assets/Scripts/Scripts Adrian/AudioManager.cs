@@ -36,27 +36,39 @@ public class AudioManager : MonoBehaviour
     }
     private void LoadVolume()
     {
-        sliderMaster.value = audioSettings.masterVolume;
-        sliderMusic.value = audioSettings.musicVolume;
-        sliderSFX.value = audioSettings.sfxVolume;
+        if(sliderMaster && sliderMusic && sliderSFX != null)
+        {
+            sliderMaster.value = audioSettings.masterVolume;
+            sliderMusic.value = audioSettings.musicVolume;
+            sliderSFX.value = audioSettings.sfxVolume;
+        }
     }
     public void SetVolumeMaster()
     {
-        volume = sliderMaster.value;
-        myMixer.SetFloat("MasterVolume",Mathf.Log10(volume)*20);
-        audioSettings.masterVolume = volume;
+        if(sliderMaster != null)
+        {
+            volume = sliderMaster.value;
+            myMixer.SetFloat("MasterVolume", Mathf.Log10(volume) * 20);
+            audioSettings.masterVolume = volume;
+        }   
     }
     public void SetVolumeMusic()
     {
-        volume = sliderMusic.value;
-        myMixer.SetFloat("MusicVolume", Mathf.Log10(volume) * 20);
-        audioSettings.musicVolume = volume;
+        if(sliderMusic != null)
+        {
+            volume = sliderMusic.value;
+            myMixer.SetFloat("MusicVolume", Mathf.Log10(volume) * 20);
+            audioSettings.musicVolume = volume;
+        }      
     }
     public void SetVolumeSfx()
     {
-        volume = sliderSFX.value;
-        myMixer.SetFloat("SfxVolume", Mathf.Log10(volume) * 20);
-        audioSettings.sfxVolume = volume;
+        if(sliderSFX != null)
+        {
+            volume = sliderSFX.value;
+            myMixer.SetFloat("SfxVolume", Mathf.Log10(volume) * 20);
+            audioSettings.sfxVolume = volume;
+        }      
     }
     public void ChangeSound()
     {
@@ -71,9 +83,10 @@ public class AudioManager : MonoBehaviour
         else
         {
             soundImage.sprite= soundOn;
-            SetVolumeMaster();
-            SetVolumeMusic();
-            SetVolumeSfx();
+
+            myMixer.SetFloat("MasterVolume", audioSettings.masterVolume);
+            myMixer.SetFloat("MusicVolume", audioSettings.musicVolume);
+            myMixer.SetFloat("SfxVolume", audioSettings.sfxVolume);
         }
     }
 }

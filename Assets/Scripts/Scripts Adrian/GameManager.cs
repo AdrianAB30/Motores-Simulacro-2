@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,9 +13,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject panelInput;
     [SerializeField] private GameObject panelAudio;
     [SerializeField] private Animator controlsAnimator;
+    [SerializeField] private Image pauseButton;
+    [SerializeField] private GameObject panelPause;
     private float distance;
     private float finalDistance = 0f;
     private bool gameOver = false;
+    private bool isGamePaused = false;
     public static GameManager instance;
 
     private void Awake()
@@ -41,6 +45,19 @@ public class GameManager : MonoBehaviour
     {
         UpdateDistance();
     }
+
+    public void ChangePause()
+    {
+        if (isGamePaused)
+        {
+            ResumeGame();
+        }
+        else
+        {
+            PauseGame();
+        }
+    }
+
     public void GameOver()
     {
         SceneManager.LoadScene("GameOver");
@@ -106,5 +123,17 @@ public class GameManager : MonoBehaviour
     public void LoadGameScene()
     {
         SceneManager.LoadScene("Game"); 
+    }
+    public void PauseGame()
+    {
+        isGamePaused = true;
+        panelPause.SetActive(true);
+        Time.timeScale = 0f;
+    }
+    public void ResumeGame()
+    {
+        isGamePaused=false;
+        panelPause.SetActive(false);
+        Time.timeScale = 1f;
     }
 }
