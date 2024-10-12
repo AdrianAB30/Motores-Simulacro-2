@@ -7,7 +7,7 @@ public class CandyGenerator : MonoBehaviour
 {
     public static CandyGenerator instance;
     public List<GameObject> Candies = new List<GameObject>();
-    private float time_to_create = 4f;
+    private float time_to_create = 2f;
     private float actual_time = 0f;
     private float limitSuperior;
     private float limitInferior;
@@ -21,13 +21,11 @@ public class CandyGenerator : MonoBehaviour
         }
         instance = this;
     }
-    // Start is called before the first frame update
     void Start()
     {
         SetMinMax();
     }
 
-    // Update is called once per frame
     void Update()
     {
         actual_time += Time.deltaTime;
@@ -55,22 +53,10 @@ public class CandyGenerator : MonoBehaviour
             Destroy(candy_script.gameObject);
             return;
         }
-        if (candy_script.frame == 3)
-        {
-            SceneManager.LoadScene("GameOver");
-            return;
-        }
-        int lives = player_script.player_lives;
+        int point = player_script.player_lives;
         int live_changer = candy_script.lifeChanges;
-        lives += live_changer;
-        print(lives);
-        if (lives <= 0)
-        {
-            SceneManager.LoadScene("GameOver");
-        }
-        player_script.player_lives = lives;
+        point += live_changer;
+        player_script.playerScore.score += candy_script.lifeChanges;
         Destroy(candy_script.gameObject);
     }
-
-
 }

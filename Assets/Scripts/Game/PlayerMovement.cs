@@ -1,34 +1,47 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using TMPro;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public KeyCode up;
-    public KeyCode down;
+    [Header("Player Data")]
     private Rigidbody2D myRB;
-    [SerializeField]
-    private float speed;
+    [SerializeField] private Transform startPosition;
+    [SerializeField] private float speed;
     private float limitSuperior;
     private float limitInferior;
     public int player_lives = 4;
-    // Start is called before the first frame update
+    public bool isInvulnerable = false;
+    [SerializeField] private Collider2D myCol;
+    private Vector2 movement;
+    [SerializeField] public PlayerSOS playerScore;
+
+    [Header("UI Data")]
+    [SerializeField] private TMP_Text scoreText;
+
     void Start()
     {
-        if (up == KeyCode.None) up = KeyCode.UpArrow;
-        if (down == KeyCode.None) down = KeyCode.DownArrow;
-        myRB = GetComponent<Rigidbody2D>();
         SetMinMax();
+        myRB = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        if (Input.GetKey(up) && transform.position.y < limitSuperior)
+        AplyPhysics();
+    }
+    private void Update()
+    {
+        UpdateScore();
+    }
+    private void AplyPhysics()
+    {
+        if (movement.y > 0 && transform.position.y < limitSuperior)
         {
             myRB.velocity = new Vector2(0f, speed);
         }
-        else if (Input.GetKey(down) && transform.position.y > limitInferior)
+        else if (movement.y < 0 && transform.position.y > limitInferior)
         {
             myRB.velocity = new Vector2(0f, -speed);
         }
@@ -37,6 +50,10 @@ public class PlayerMovement : MonoBehaviour
             myRB.velocity = Vector2.zero;
         }
     }
+    public void OnMovement(InputAction.CallbackContext context)
+    {
+        movement = context.ReadValue<Vector2>();
+    }
 
     void SetMinMax()
     {
@@ -44,12 +61,36 @@ public class PlayerMovement : MonoBehaviour
         limitInferior = -bounds.y;
         limitSuperior = bounds.y;
     }
-
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (other.tag == "Candy")
+        if (collision.CompareTag("Candy"))
         {
-            CandyGenerator.instance.ManageCandy(other.gameObject.GetComponent<CandyController>(), this);
+            CandyGenerator.instance.ManageCandy(collision.gameObject.GetComponent<CandyController>(),this);
         }
+        else if (collision.CompareTag("Especial"))
+        {
+
+        }
+        else if (collision.CompareTag("Obstacle"))
+        {
+            if(!isInvulnerable)
+            {
+                GenerateObstacles.instance.ManagerObstacle(collision.gameObject.GetComponent<ControllerObstacle>(),this);
+                transform.position = startPosition.position;
+                StartCoroutine(Invelnerability());
+            }
+        }
+    }
+    IEnumerator Invelnerability()
+    {
+        myCol.enabled = false;
+        isInvulnerable = true;
+        yield return new WaitForSeconds(1f);
+        myCol.enabled = true;
+        isInvulnerable = false;
+    }
+    private void UpdateScore()
+    {
+        scoreText.text = "SCORE: " + playerScore.score.ToString();
     }
 }
