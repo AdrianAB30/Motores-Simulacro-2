@@ -12,6 +12,7 @@ public class CandyGenerator : MonoBehaviour
     private float limitSuperior;
     private float limitInferior;
     public List<GameObject> actual_candies = new List<GameObject>();
+    public AudioSource audioEat;
 
     void Awake()
     {
@@ -57,6 +58,7 @@ public class CandyGenerator : MonoBehaviour
         int live_changer = candy_script.candiesPoints.pointsAdd;
         point += live_changer;
         player_script.playerScore.score += candy_script.candiesPoints.pointsAdd;
+        audioEat.Play();
         Destroy(candy_script.gameObject);
     }
 }

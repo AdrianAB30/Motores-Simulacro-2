@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform startPosition;
     [SerializeField] private float speed;
     [SerializeField] private float speedSpecial;
+    [SerializeField] private float lessSpeed;
     private float limitSuperior;
     private float limitInferior;
     public int player_lives = 4;
@@ -23,6 +24,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private TMP_Text lifeText;
 
+    [Header("Sounds Especial")]
+    [SerializeField] private AudioSource mushroom;
+    [SerializeField] private AudioSource coffe;
     void Start()
     {
         SetMinMax();
@@ -86,10 +90,25 @@ public class PlayerMovement : MonoBehaviour
         {
             CandyGenerator.instance.ManageCandy(collision.gameObject.GetComponent<CandyController>(),this);
         }
-        else if (collision.CompareTag("Especial"))
+        else if (collision.CompareTag("EspecialCoffe"))
         {
             speed += speedSpecial;
+            coffe.Play();
             Destroy(collision.gameObject);
+            if (speed >= 15f)
+            {
+                speed = 15f;
+            }
+        }
+        else if (collision.CompareTag("EspecialMushroom"))
+        {
+            speed -= lessSpeed;
+            mushroom.Play();
+            Destroy(collision.gameObject);
+            if (speed <= 1f)
+            {
+                speed = 1f;
+            }
         }
         else if (collision.CompareTag("Obstacle"))
         {

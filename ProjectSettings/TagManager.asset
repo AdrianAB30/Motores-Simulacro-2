@@ -6,7 +6,8 @@ TagManager:
   tags:
   - Candy
   - Obstacle
-  - Especial
+  - EspecialCoffe
+  - EspecialMushroom
   layers:
   - Default
   - TransparentFX

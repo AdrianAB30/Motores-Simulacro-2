@@ -11,6 +11,8 @@ public class GenerateObstacles : MonoBehaviour
     private float spawnInterval = 4f;
     private float limitSuperior;
     private float limitInferior;
+    public AudioSource hitSound;
+    public AudioSource hurtSound;
 
     public GameObject player;
     private PlayerMovement playerScript;
@@ -70,6 +72,8 @@ public class GenerateObstacles : MonoBehaviour
             lives = 0;
         }
         player_script.player_lives = lives;
+        hitSound.Play();
+        hurtSound.Play();
         Destroy(obstacle_script.gameObject);
     }
 }
